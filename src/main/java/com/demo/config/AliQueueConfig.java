@@ -1,5 +1,6 @@
 package com.demo.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -12,9 +13,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AliQueueConfig {
 
+    @Value("${access.key.id}")
     private String accessKeyId = "LTAI4Fof8mk5s4LHruo1xcxQ";
+    @Value("${access.key.secret}")
     private String accessKeySecret = "LFUiqLOng1scaoThXcambc5wW0ugni";
+    @Value("${account.end.point}")
     private String accountEndPoint = "https://1279882918531483.mns.cn-shenzhen.aliyuncs.com/";
+    @Value("${receive.queue.name}")
     private String receiveQueueName = "seckill";
 
     public String getAccessKeyId() {

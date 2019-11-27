@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
@@ -23,6 +24,10 @@ public class TestController {
     @Autowired
     private AliQueueServiceImpl aliQueueService;
 
+    private int count = 5;
+
+
+
     /**
      * valid测试
      * @param dto
@@ -36,13 +41,52 @@ public class TestController {
     /**
      * 秒杀入口
      * 入口不做处理，直接发送到消息队列
+     * 消息队列的方式
+     * @param userId
+     * @return
+     */
+//    @GetMapping("secKill")
+//    public RespModel secKill(@RequestParam("userId") String userId){
+//        aliQueueService.sendMessage(userId);
+//        RespModel respModel = new RespModel();
+//        return respModel;
+//    }
+
+    /**
+     * 同步接口方式  效率超级低
+     * @param userId
+     * @return
+     */
+//    @GetMapping("secKill")
+//    synchronized public RespModel secKill(@RequestParam("userId") String userId){
+//        RespModel respModel = new RespModel("fail");
+//        if(count > 0){
+//            System.out.println(userId);
+//            count--;
+//            respModel = new RespModel();
+//        }
+//        return respModel;
+//    }
+
+
+    private static AtomicInteger atomicCount = new AtomicInteger(0);
+
+    private static final Integer total = 5;
+
+    /**
+     * 使用原子的计数类
+     *
      * @param userId
      * @return
      */
     @GetMapping("secKill")
     public RespModel secKill(@RequestParam("userId") String userId){
-        aliQueueService.sendMessage(userId);
-        RespModel respModel = new RespModel();
+        RespModel respModel = new RespModel("fail");
+        int now = atomicCount.incrementAndGet();
+        if(now <= total){
+            System.out.println(userId+"------"+now);
+            respModel = new RespModel();
+        }
         return respModel;
     }
 
