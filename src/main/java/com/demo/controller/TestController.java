@@ -1,9 +1,12 @@
 package com.demo.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.aliyun.mns.model.Message;
 import com.demo.dto.RespModel;
 import com.demo.dto.TestDTO;
 import com.demo.service.AliQueueServiceImpl;
+import com.demo.service.SchoolServiceImpl;
+import com.demo.vo.TestVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +27,9 @@ public class TestController {
     @Autowired
     private AliQueueServiceImpl aliQueueService;
 
+    @Autowired
+    private SchoolServiceImpl schoolService;
+
     private int count = 5;
 
 
@@ -34,8 +40,12 @@ public class TestController {
      * @return
      */
     @PostMapping("test")
-    public RespModel info(@Valid @RequestBody TestDTO dto){
-        return new RespModel();
+    public RespModel<TestVO> info(@Valid @RequestBody TestDTO dto){
+        RespModel respModel = new RespModel();
+        TestVO data = new TestVO();
+        data.setJsonStr(JSON.toJSONString(dto));
+        respModel.setData(data);
+        return respModel;
     }
 
     /**
@@ -110,6 +120,12 @@ public class TestController {
                 aliQueueService.deleteMessage(message);
             }
         }
+    }
+
+    @GetMapping("school")
+    public RespModel getSchools(){
+        schoolService.getSchools();
+        return new RespModel();
     }
 
 }
